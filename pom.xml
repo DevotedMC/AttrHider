@@ -6,7 +6,7 @@
   <groupId>com.civpvp</groupId>
   <artifactId>AttrHider</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <name>AttrHider</name>
   <url>https://github.com/ttk2/AttrHider</url>
   
