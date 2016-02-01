@@ -73,7 +73,7 @@ public class AttrHider extends JavaPlugin implements Listener {
 	    		try{
 		    		PacketContainer p = e.getPacket();
 		    		if(e.getPlayer().getEntityId()!=p.getIntegers().read(0)){ //Make sure it's not the player
-		    			p.getShorts().write(0, (short)420);
+		    			p.getIntegers().write(1, 420);
 		    		}
 		    		
 	    		} catch (FieldAccessException exception){ 
@@ -83,6 +83,7 @@ public class AttrHider extends JavaPlugin implements Listener {
 	    });
 	    
 	    //Make reported health random
+	    //This method gave me cancer. Maybe someday a good samaritan will make it look prettier.
 	    ProtocolLibrary.getProtocolManager().addPacketListener(
 	    	      new PacketAdapter(this, ListenerPriority.NORMAL, new PacketType[] { PacketType.Play.Server.ENTITY_METADATA }) {
 	    	      public void onPacketSending(PacketEvent event) {
@@ -105,8 +106,7 @@ public class AttrHider extends JavaPlugin implements Listener {
 	    	            }
 	    	          }
 	    	        }
-	    	        catch (Exception e)
-	    	        {
+	    	        catch (Exception e){
 	    	          e.printStackTrace();
 	    	        }
 	    	      }
@@ -157,7 +157,6 @@ public class AttrHider extends JavaPlugin implements Listener {
                     || type == Material.STONE_SPADE
                     || type == Material.WOOD_SPADE) {
                 Object[] copy = i.getEnchantments().keySet().toArray();
-
                 for (Object enchantment : copy) {
                     i.removeEnchantment((Enchantment) enchantment);
                 }
