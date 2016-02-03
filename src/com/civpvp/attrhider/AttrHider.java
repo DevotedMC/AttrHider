@@ -56,7 +56,8 @@ public class AttrHider extends JavaPlugin implements Listener {
                     StructureModifier<ItemStack> items = p.getItemModifier();
                     ItemStack i = items.read(0);
                     if (i != null) {
-                        adjustEnchantment(i);
+                        //adjustEnchantment(i);
+                    	i.setDurability((short)1);
                         items.write(0, i);
                     }
                 } catch (FieldAccessException exception) { //Should catch if the packet is the wrong type
