@@ -2,7 +2,6 @@ package com.civpvp.attrhider;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,7 +56,8 @@ public class AttrHider extends JavaPlugin implements Listener {
                     StructureModifier<ItemStack> items = p.getItemModifier();
                     ItemStack i = items.read(0);
                     if (i != null) {
-                        adjustEnchantment(i);
+                        //adjustEnchantment(i);
+                    	i.setDurability((short)1);
                         items.write(0, i);
                     }
                 } catch (FieldAccessException exception) { //Should catch if the packet is the wrong type
@@ -67,51 +67,46 @@ public class AttrHider extends JavaPlugin implements Listener {
         });
 
         //Strips potion duration length and sets it to 420 ticks so you can blaze it
-	    protocolManager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_EFFECT){
+	    protocolManager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_EFFECT) {
 	    	@Override
-	    	public void onPacketSending(PacketEvent e){
-	    		try{
+	    	public void onPacketSending(PacketEvent e) {
+	    		try {
 		    		PacketContainer p = e.getPacket();
-		    		if(e.getPlayer().getEntityId()!=p.getIntegers().read(0)){ //Make sure it's not the player
+		    		if(e.getPlayer().getEntityId() != p.getIntegers().read(0)) { //Don't hide a player's own stuff from them
 		    			p.getIntegers().write(1, 420);
 		    		}
-		    		
-	    		} catch (FieldAccessException exception){ 
+	    		} catch (FieldAccessException exception) { 
 	    			exception.printStackTrace();
 	    		}
 	    	}
 	    });
 	    
 	    //Make reported health random
-	    //This method gave me cancer. Maybe someday a good samaritan will make it look prettier.
-	    ProtocolLibrary.getProtocolManager().addPacketListener(
-	    	      new PacketAdapter(this, ListenerPriority.NORMAL, new PacketType[] { PacketType.Play.Server.ENTITY_METADATA }) {
-	    	      public void onPacketSending(PacketEvent event) {
-	    	        try {
-	    	          Player observer = event.getPlayer();
-	    	          StructureModifier entityModifer = event.getPacket().getEntityModifier(observer.getWorld());
-	    	          Entity entity = (Entity)entityModifer.read(0);
-	    	          if ((entity != null) && (observer != entity) && ((entity instanceof LivingEntity)) &&
-	    	            ((!(entity instanceof EnderDragon)) || (!(entity instanceof Wither))) && (
-	    	            (entity.getPassenger() == null) || (entity.getPassenger() != observer))) {
-	    	            event.setPacket(event.getPacket().deepClone());
-	    	            StructureModifier watcher = event.getPacket()
-	    	              .getWatchableCollectionModifier();
-	    	            for (WrappedWatchableObject watch : (List<WrappedWatchableObject>)watcher.read(0)) {
-	    	              if ((watch.getIndex() == 6) && 
-	    	                (((Float)watch.getValue()).floatValue() > 0.0F))
-	    	                watch.setValue(
-	    	                  Float.valueOf(new Random().nextInt((int)((Damageable)(LivingEntity)entity).getMaxHealth()) + 
-	    	                  new Random().nextFloat()));
-	    	            }
-	    	          }
-	    	        }
-	    	        catch (Exception e){
-	    	          e.printStackTrace();
-	    	        }
-	    	      }
-	    	    });
-	        
+		ProtocolLibrary.getProtocolManager().addPacketListener(
+		new PacketAdapter(this, ListenerPriority.NORMAL, new PacketType[] { PacketType.Play.Server.ENTITY_METADATA }) {
+			public void onPacketSending(PacketEvent event) {
+				try {
+					Player observer = event.getPlayer();
+					//Get the entity from the packet
+					Entity entity = (Entity)event.getPacket().getEntityModifier(observer.getWorld()).read(0);
+					event.setPacket(event.getPacket().deepClone());
+					//If the entity is not the observer, and the entity is alive, and the entity is not a dragon or wither,
+					//and the entity is not the observer's mount
+					if ((entity != null) && (observer != entity) && ((entity instanceof LivingEntity)) &&
+					  (!(entity instanceof EnderDragon) && !(entity instanceof Wither)) && (entity.getPassenger() != observer)) {
+						StructureModifier<List<WrappedWatchableObject>> watcher = event.getPacket().getWatchableCollectionModifier();
+					  	for (WrappedWatchableObject watch : watcher.read(0)) {
+							if ((watch.getIndex() == 6) && (((Float)watch.getValue()).floatValue() > 0.0F)) {
+								watch.setValue(20f);
+							}
+				    	}
+					}
+	  	        }
+				catch (Exception e){
+	  	          e.printStackTrace();
+	  	        }
+			}
+		});
 	}
 
     private ItemStack adjustEnchantment(ItemStack i) {
@@ -169,7 +164,7 @@ public class AttrHider extends JavaPlugin implements Listener {
         return i;
     }
 
-    @EventHandler
+    /*@EventHandler
 	public void onMount(final VehicleEnterEvent event) {
 		if ((event.getEntered() instanceof Player))
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
@@ -179,6 +174,6 @@ public class AttrHider extends JavaPlugin implements Listener {
 	        	}
 	        }
 		});
-	}
+	}*/
 }
 
