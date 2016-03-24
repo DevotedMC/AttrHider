@@ -3,7 +3,7 @@ package com.civpvp.attrhider;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderDragon;
