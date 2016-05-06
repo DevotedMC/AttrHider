@@ -87,11 +87,11 @@ public class AttrHider extends JavaPlugin implements Listener {
 					Player observer = event.getPlayer();
 					//Get the entity from the packet
 					Entity entity = (Entity)event.getPacket().getEntityModifier(observer.getWorld()).read(0);
-					event.setPacket(event.getPacket().deepClone());
 					//If the entity is not the observer, and the entity is alive, and the entity is not a dragon or wither,
 					//and the entity is not the observer's mount
 					if ((entity != null) && (observer != entity) && ((entity instanceof LivingEntity)) &&
 					  (!(entity instanceof EnderDragon) && !(entity instanceof Wither)) && (entity.getPassenger() != observer)) {
+						event.setPacket(event.getPacket().deepClone());
 						StructureModifier<List<WrappedWatchableObject>> watcher = event.getPacket().getWatchableCollectionModifier();
 					  	for (WrappedWatchableObject watch : watcher.read(0)) {
 							if ((watch.getIndex() == 6) && (((Float)watch.getValue()).floatValue() > 0.0F)) {
