@@ -3,6 +3,7 @@ package com.civpvp.attrhider;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderDragon;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.PacketType;
@@ -52,9 +54,19 @@ public class AttrHider extends JavaPlugin implements Listener {
                     StructureModifier<ItemStack> items = p.getItemModifier();
                     ItemStack i = items.read(0);
                     if (i != null && shouldBeObfuscated(i.getType())) {
+                    	Color color = null;
+                    	if (i.getItemMeta() instanceof LeatherArmorMeta) {
+                    		LeatherArmorMeta lam = (LeatherArmorMeta) i.getItemMeta();
+                    		color = lam.getColor();
+                    	}
                     	ItemStack is = new ItemStack(i.getType(), 1 , (short) 1);
                     	if (i.getEnchantments().keySet().size() != 0) {
                     		is.addEnchantment(Enchantment.DURABILITY, 1);
+                    	}
+                    	if (color != null) {
+                    		LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
+                    		lam.setColor(color);
+                    		is.setItemMeta(lam);
                     	}
                         items.write(0, is);
                     }
@@ -87,11 +99,11 @@ public class AttrHider extends JavaPlugin implements Listener {
 					Player observer = event.getPlayer();
 					//Get the entity from the packet
 					Entity entity = (Entity)event.getPacket().getEntityModifier(observer.getWorld()).read(0);
-					event.setPacket(event.getPacket().deepClone());
 					//If the entity is not the observer, and the entity is alive, and the entity is not a dragon or wither,
 					//and the entity is not the observer's mount
 					if ((entity != null) && (observer != entity) && ((entity instanceof LivingEntity)) &&
 					  (!(entity instanceof EnderDragon) && !(entity instanceof Wither)) && (entity.getPassenger() != observer)) {
+						event.setPacket(event.getPacket().deepClone());
 						StructureModifier<List<WrappedWatchableObject>> watcher = event.getPacket().getWatchableCollectionModifier();
 					  	for (WrappedWatchableObject watch : watcher.read(0)) {
 							if ((watch.getIndex() == 6) && (((Float)watch.getValue()).floatValue() > 0.0F)) {
