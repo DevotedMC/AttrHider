@@ -60,7 +60,7 @@ public class AttrHider extends JavaPlugin implements Listener {
                     		color = lam.getColor();
                     	}
                     	ItemStack is = new ItemStack(i.getType(), 1 , (short) 1);
-                    	if (i.getEnchantments().keySet().size() != 0) {
+                    	if (i.getItemMeta().getEnchants().values().size() != 0) {
                     		is.addEnchantment(Enchantment.DURABILITY, 1);
                     	}
                     	if (color != null) {
