@@ -5,7 +5,7 @@
 	<groupId>com.civpvp</groupId>
 	<artifactId>AttrHider</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<name>AttrHider</name>
 	<url>https://github.com/Civcraft/AttrHider</url>
 
@@ -31,13 +31,13 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.9.2-R0.1-SNAPSHOT</version>
+			<version>1.10-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>3.6.5</version>
+			<version>4.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
