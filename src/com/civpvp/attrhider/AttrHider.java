@@ -58,9 +58,10 @@ public class AttrHider extends JavaPlugin {
 				@Override
 				public void onPacketSending(PacketEvent event) {
 					if(event.getPacket().getIntegers().read(0) != event.getPlayer().getEntityId()) {
-						event.getPacket().getBytes().write(1, (byte) 26);
-						event.getPacket().getBytes().write(2, (byte) 420);
-						event.getPacket().getBytes().write(3, (byte) 0);
+						event.getPacket().getBytes().write(0, (byte) 26);
+						event.getPacket().getBytes().write(1, (byte) 420);
+						event.getPacket().getBytes().write(2, (byte) 0);
+						event.getPacket().getIntegers().write(1, 420);
 					}
 				}
 			});
