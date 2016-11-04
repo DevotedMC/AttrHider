@@ -38,18 +38,28 @@ public class AttrHider extends JavaPlugin {
 			new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.ENTITY_EQUIPMENT) {
 				@Override
 				public void onPacketSending(PacketEvent event) {
-					ItemStack item = event.getPacket().getItemModifier().read(0);
-					if(item != null) {
-						if(item.hasItemMeta() && item.getItemMeta().hasEnchants()) {
-							ItemMeta meta = item.getItemMeta();
-							for(Enchantment e : meta.getEnchants().keySet()) {
-								meta.removeEnchant(e);
-							}
-							meta.addEnchant(Enchantment.DURABILITY, 1, true);
-							item.setItemMeta(meta);
+					ItemStack old = event.getPacket().getItemModifier().read(0);
+					if(old == null) return;
+					ItemStack clean = new ItemStack(old.getType());
+					if(old.hasItemMeta() && clean.hasItemMeta()) {
+						ItemMeta oldMeta = old.getItemMeta();
+						ItemMeta newMeta = clean.getItemMeta();
+						if(oldMeta instanceof LeatherArmorMeta) {
+							Color color = ((LeatherArmorMeta)oldMeta).getColor();
+							((LeatherArmorMeta)newMeta).setColor(color);
 						}
+						if(oldMeta.hasEnchants()) {
+							clean.addEnchantment(Enchantment.DURABILITY, 1);
+						}
+						if(oldMeta instanceof BannerMeta) {
+							DyeColor base = ((BannerMeta)oldMeta).getBaseColor();
+							List<Pattern> pattern = ((BannerMeta)oldMeta).getPatterns();
+							((BannerMeta)newMeta).setBaseColor(base);
+							((BannerMeta)newMeta).setPatterns(pattern);
+						}
+						clean.setItemMeta(newMeta);
 					}
-					event.getPacket().getItemModifier().write(0, item);
+					event.getPacket().getItemModifier().write(0, clean);
 				}
 			});
 		
